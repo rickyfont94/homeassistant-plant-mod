@@ -18,6 +18,7 @@ ATTR_MMOL = "mmol"
 ATTR_MOL = "mol"
 ATTR_DLI = "dli"
 
+
 ATTR_TEMPERATURE = "temperature"
 ATTR_PROBLEM = "problem"
 ATTR_SENSORS = "sensors"
@@ -31,6 +32,7 @@ ATTR_PLANT = "plant"
 ATTR_SPECIES = "species"
 ATTR_IMAGE = "image"
 ATTR_SEARCH_FOR = "search_for"
+ATTR_AIR_TEMPERATURE = "air_temperature"  # Added for air temperature
 
 # Readings are used by humans
 READING_BATTERY = "battery"
@@ -43,6 +45,7 @@ READING_PPFD = "ppfd (mol)"
 READING_MMOL = "mmol"
 READING_MOL = "mol"
 READING_DLI = "dli"
+READING_AIR_TEMPERATURE = "air temperature"  # Added for air temperature
 
 
 ATTR_MAX_ILLUMINANCE_HISTORY = "max_illuminance"
@@ -69,6 +72,8 @@ DEFAULT_MIN_MOL = 2
 DEFAULT_MAX_MOL = 30
 DEFAULT_MIN_DLI = 2
 DEFAULT_MAX_DLI = 30
+DEFAULT_MIN_AIR_TEMPERATURE = 10  # Customize as needed
+DEFAULT_MAX_AIR_TEMPERATURE = 40  # Customize as needed
 
 DEFAULT_IMAGE_PATH = "/config/www/images/plants/"
 DEFAULT_IMAGE_LOCAL_URL = "/local/images/plants/"
@@ -103,6 +108,7 @@ FLOW_SENSOR_MOISTURE = "moisture_sensor"
 FLOW_SENSOR_CONDUCTIVITY = "conductivity_sensor"
 FLOW_SENSOR_ILLUMINANCE = "illuminance_sensor"
 FLOW_SENSOR_HUMIDITY = "humidity_sensor"
+FLOW_SENSOR_AIR_TEMPERATURE = "air_temperature_sensor"  # Added for air temperature
 
 FLOW_TEMP_UNIT = "temperature_unit"
 FLOW_ILLUMINANCE_TRIGGER = "illuminance_trigger"
@@ -111,6 +117,8 @@ FLOW_TEMPERATURE_TRIGGER = "temperature_trigger"
 FLOW_DLI_TRIGGER = "dli_trigger"
 FLOW_MOISTURE_TRIGGER = "moisture_trigger"
 FLOW_CONDUCTIVITY_TRIGGER = "conductivity_trigger"
+FLOW_AIR_TEMPERATURE_TRIGGER = "air_temperature_trigger"  # Added for air temperature
+FLOW_AIR_TEMPERATURE_UNIT = "air_temperature_unit" # Added for air temperature
 
 FLOW_FORCE_SPECIES_UPDATE = "force_update"
 
@@ -121,6 +129,7 @@ ICON_ILLUMINANCE = "mdi:brightness-6"
 ICON_MOISTURE = "mdi:water"
 ICON_PPFD = "mdi:white-balance-sunny"
 ICON_TEMPERATURE = "mdi:thermometer"
+ICON_AIR_TEMPERATURE = "mdi:sun-thermometer-outline"  # Use an appropriate Material Design Icon
 
 OPB_GET = "get"
 OPB_SEARCH = "search"
@@ -162,6 +171,9 @@ CONF_MIN_DLI = f"min_{ATTR_DLI}"
 CONF_MAX_DLI = f"max_{ATTR_DLI}"
 CONF_MIN_BRIGHTNESS = "min_brightness"  # DEPRECATED. Only used for config migration
 CONF_MAX_BRIGHTNESS = "max_brightness"  # DEPRECATED. Only used for config migration
+CONF_MIN_AIR_TEMPERATURE = f"min_{ATTR_AIR_TEMPERATURE}"  # Minimum air temperature
+CONF_MAX_AIR_TEMPERATURE = f"max_{ATTR_AIR_TEMPERATURE}"  # Maximum air temperature
+
 
 
 CONF_CHECK_DAYS = "check_days"
