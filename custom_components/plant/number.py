@@ -76,6 +76,12 @@ from .const import (
     READING_TEMPERATURE,
     UNIT_CONDUCTIVITY,
     UNIT_DLI,
+    ICON_AIR_TEMPERATURE,
+    READING_AIR_TEMPERATURE,
+    CONF_MAX_AIR_TEMPERATURE,
+    CONF_MIN_AIR_TEMPERATURE,
+    DEFAULT_MIN_AIR_TEMPERATURE,
+    DEFAULT_MAX_AIR_TEMPERATURE
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -99,6 +105,8 @@ async def async_setup_entry(
     pminh = PlantMinHumidity(hass, entry, plant)
     pmaxmm = PlantMaxDli(hass, entry, plant)
     pminmm = PlantMinDli(hass, entry, plant)
+    pmamt = PlantMinAirTemperature(hass, entry, plant) # Added for air temperature
+    pmaxx = PlantMaxAirTemperature(hass, entry, plant) # Added for air temperature
 
     number_entities = [
         pmaxm,
@@ -113,6 +121,8 @@ async def async_setup_entry(
         pminh,
         pmaxmm,
         pminmm,
+        pmamt,
+        pmaxx
     ]
     async_add_entities(number_entities)
 
@@ -130,6 +140,8 @@ async def async_setup_entry(
         min_humidity=pminh,
         max_dli=pmaxmm,
         min_dli=pminmm,
+        max_air_temperature=pmamt,
+        min_air_temperature=pmaxx
     )
     # await _async_number_add_to_device_registry(
     #     hass, number_entities=number_entities, device_id=plant.device_id
@@ -454,8 +466,49 @@ class PlantMinTemperature(PlantMinMax):
             )
 
         self._hass.states.set(self.entity_id, new_state, new_attributes)
+############################################################################
+class PlantMaxAirTemperature(PlantMinMax):
+    """Entity class for max air temperature threshold."""
 
+    def __init__(self, hass: HomeAssistant, config: ConfigEntry, plantdevice: Entity) -> None:
+        """Initialize the component."""
+        self._attr_name = f"{config.data[FLOW_PLANT_INFO][ATTR_NAME]} {ATTR_MAX} {READING_AIR_TEMPERATURE}"
+        self._default_value = config.data[FLOW_PLANT_INFO][FLOW_PLANT_LIMITS].get(
+            CONF_MAX_AIR_TEMPERATURE, DEFAULT_MAX_AIR_TEMPERATURE
+        )
+        self._attr_unique_id = f"{config.entry_id}-max-air-temperature"
+        self._attr_native_unit_of_measurement = hass.config.units.temperature_unit
+        super().__init__(hass, config, plantdevice)
+        self._attr_native_max_value = 60
+        self._attr_native_min_value = -10
+        self._attr_native_step = 1
+        self._attr_icon = ICON_AIR_TEMPERATURE
 
+    @property
+    def device_class(self):
+        return "air_temperature"
+
+class PlantMinAirTemperature(PlantMinMax):
+    """Entity class for min air temperature threshold."""
+
+    def __init__(self, hass: HomeAssistant, config: ConfigEntry, plantdevice: Entity) -> None:
+        """Initialize the component."""
+        self._attr_name = f"{config.data[FLOW_PLANT_INFO][ATTR_NAME]} {ATTR_MIN} {READING_AIR_TEMPERATURE}"
+        self._default_value = config.data[FLOW_PLANT_INFO][FLOW_PLANT_LIMITS].get(
+            CONF_MIN_AIR_TEMPERATURE, DEFAULT_MIN_AIR_TEMPERATURE
+        )
+        self._attr_unique_id = f"{config.entry_id}-min-air-temperature"
+        self._attr_native_unit_of_measurement = hass.config.units.temperature_unit
+        super().__init__(hass, config, plantdevice)
+        self._attr_native_max_value = 60
+        self._attr_native_min_value = -10
+        self._attr_native_step = 1
+        self._attr_icon = ICON_AIR_TEMPERATURE
+
+    @property
+    def device_class(self):
+        return "air_temperature"
+############################################################################
 class PlantMaxIlluminance(PlantMinMax):
     """Entity class for max illuminance threshold"""
 
