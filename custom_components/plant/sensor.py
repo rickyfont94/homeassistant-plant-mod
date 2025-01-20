@@ -111,6 +111,7 @@ async def async_setup_entry(
         pcurm,
         pcurt,
         pcurh,
+        pcurat,
     ]
     async_add_entities(plant_sensors)
     hass.data[DOMAIN][entry.entry_id][ATTR_SENSORS] = plant_sensors
