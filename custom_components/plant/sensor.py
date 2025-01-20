@@ -51,11 +51,13 @@ from .const import (
     DOMAIN,
     DOMAIN_SENSOR,
     FLOW_PLANT_INFO,
+    FLOW_SENSOR_AIR_TEMPERATURE,  # New constant for air temperature sensor
     FLOW_SENSOR_CONDUCTIVITY,
     FLOW_SENSOR_HUMIDITY,
     FLOW_SENSOR_ILLUMINANCE,
     FLOW_SENSOR_MOISTURE,
     FLOW_SENSOR_TEMPERATURE,
+    ICON_AIR_TEMPERATURE,  # New icon for air temperature
     ICON_CONDUCTIVITY,
     ICON_DLI,
     ICON_HUMIDITY,
@@ -63,6 +65,7 @@ from .const import (
     ICON_MOISTURE,
     ICON_PPFD,
     ICON_TEMPERATURE,
+    READING_AIR_TEMPERATURE,  # New reading type for air temperature
     READING_CONDUCTIVITY,
     READING_DLI,
     READING_HUMIDITY,
@@ -89,6 +92,7 @@ async def async_setup_entry(
         sensor_entities = [
             PlantDummyMoisture(hass, entry, plant),
             PlantDummyTemperature(hass, entry, plant),
+            PlantDummyAirTemperature(hass, entry, plant),
             PlantDummyIlluminance(hass, entry, plant),
             PlantDummyConductivity(hass, entry, plant),
             PlantDummyHumidity(hass, entry, plant),
@@ -99,6 +103,7 @@ async def async_setup_entry(
     pcurc = PlantCurrentConductivity(hass, entry, plant)
     pcurm = PlantCurrentMoisture(hass, entry, plant)
     pcurt = PlantCurrentTemperature(hass, entry, plant)
+    pcurat = PlantCurrentAirTemperature(hass, entry, plant)
     pcurh = PlantCurrentHumidity(hass, entry, plant)
     plant_sensors = [
         pcurb,
@@ -111,6 +116,7 @@ async def async_setup_entry(
     hass.data[DOMAIN][entry.entry_id][ATTR_SENSORS] = plant_sensors
     plant.add_sensors(
         temperature=pcurt,
+        air_temperature=pcurat,
         moisture=pcurm,
         conductivity=pcurc,
         illuminance=pcurb,
@@ -410,6 +416,26 @@ class PlantCurrentTemperature(PlantCurrentStatus):
         """Device class"""
         return SensorDeviceClass.TEMPERATURE
 
+class PlantCurrentAirTemperature(PlantCurrentStatus):
+    """Entity class for the current air temperature meter"""
+
+    def __init__(self, hass: HomeAssistant, config: ConfigEntry, plantdevice: Entity) -> None:
+        """Initialize the sensor"""
+        self._attr_name = (
+            f"{config.data[FLOW_PLANT_INFO][ATTR_NAME]} {READING_AIR_TEMPERATURE}"
+        )
+        self._attr_unique_id = f"{config.entry_id}-current-air-temperature"
+        self._external_sensor = config.data[FLOW_PLANT_INFO].get(
+            FLOW_SENSOR_AIR_TEMPERATURE
+        )
+        self._attr_icon = ICON_AIR_TEMPERATURE
+        self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+        super().__init__(hass, config, plantdevice)
+
+    @property
+    def device_class(self) -> str:
+        """Device class"""
+        return "air_temperature"
 
 class PlantCurrentHumidity(PlantCurrentStatus):
     """Entity class for the current humidity meter"""
@@ -751,6 +777,29 @@ class PlantDummyTemperature(PlantDummyStatus):
     def device_class(self) -> str:
         """Device class"""
         return SensorDeviceClass.TEMPERATURE
+
+class PlantDummyAirTemperature(PlantDummyStatus):
+    """Dummy sensor for air temperature"""
+
+    def __init__(self, hass: HomeAssistant, config: ConfigEntry, plantdevice: Entity) -> None:
+        """Initialize the dummy sensor"""
+        self._attr_name = (
+            f"Dummy {config.data[FLOW_PLANT_INFO][ATTR_NAME]} {READING_AIR_TEMPERATURE}"
+        )
+        self._attr_unique_id = f"{config.entry_id}-dummy-air-temperature"
+        self._attr_icon = ICON_AIR_TEMPERATURE
+        self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+        self._attr_native_value = random.randint(15, 30)
+        super().__init__(hass, config, plantdevice)
+
+    async def async_update(self) -> None:
+        """Give out a dummy value"""
+        self._attr_native_value = random.randint(15, 30)
+
+    @property
+    def device_class(self) -> str:
+        """Device class"""
+        return "air_temperature"
 
 
 class PlantDummyHumidity(PlantDummyStatus):

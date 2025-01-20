@@ -73,6 +73,12 @@ from .const import (
     OPB_SEARCH,
     PPFD_DLI_FACTOR,
     REQUEST_TIMEOUT,
+    ATTR_AIR_TEMPERATURE,
+    CONF_MAX_AIR_TEMPERATURE,
+    CONF_MIN_AIR_TEMPERATURE,
+    DEFAULT_MIN_AIR_TEMPERATURE,
+    DEFAULT_MAX_AIR_TEMPERATURE,
+    FLOW_SENSOR_AIR_TEMPERATURE,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -175,6 +181,18 @@ class PlantHelper:
             UnitOfTemperature.CELSIUS,
             0,
         )
+        max_air_temp = display_temp(
+            self.hass,
+            DEFAULT_MAX_AIR_TEMPERATURE,
+            UnitOfTemperature.CELSIUS,
+            0,
+        )
+        min_air_temp = display_temp(
+            self.hass,
+            DEFAULT_MIN_AIR_TEMPERATURE,
+            UnitOfTemperature.CELSIUS,
+            0,
+        )
         max_conductivity = DEFAULT_MAX_CONDUCTIVITY
         min_conductivity = DEFAULT_MIN_CONDUCTIVITY
         max_dli = DEFAULT_MAX_DLI
@@ -249,6 +267,22 @@ class PlantHelper:
                 opb_plant.get(
                     CONF_PLANTBOOK_MAPPING[CONF_MIN_TEMPERATURE],
                     DEFAULT_MIN_TEMPERATURE,
+                ),
+                UnitOfTemperature.CELSIUS,
+                0,
+            )
+            max_air_temp = display_temp(
+        self.hass,
+        opb_plant.get(
+            CONF_PLANTBOOK_MAPPING.get("max_air_temp"), DEFAULT_MAX_AIR_TEMPERATURE
+                ),
+                UnitOfTemperature.CELSIUS,
+                0,
+            )
+            min_air_temp = display_temp(
+                self.hass,
+                opb_plant.get(
+                    CONF_PLANTBOOK_MAPPING.get("min_air_temp"), DEFAULT_MIN_AIR_TEMPERATURE
                 ),
                 UnitOfTemperature.CELSIUS,
                 0,
@@ -331,12 +365,15 @@ class PlantHelper:
                     CONF_MIN_MOISTURE: config.get(CONF_MIN_MOISTURE, min_moisture),
                     CONF_MAX_TEMPERATURE: config.get(CONF_MAX_TEMPERATURE, max_temp),
                     CONF_MIN_TEMPERATURE: config.get(CONF_MIN_TEMPERATURE, min_temp),
+                    CONF_MAX_AIR_TEMPERATURE: config.get(CONF_MAX_AIR_TEMPERATURE, max_air_temp),
+                    CONF_MIN_AIR_TEMPERATURE: config.get(CONF_MIN_AIR_TEMPERATURE, min_air_temp),
                     CONF_MAX_HUMIDITY: config.get(CONF_MAX_HUMIDITY, max_humidity),
                     CONF_MIN_HUMIDITY: config.get(CONF_MIN_HUMIDITY, min_humidity),
                     CONF_MAX_DLI: config.get(CONF_MAX_DLI, max_dli),
                     CONF_MIN_DLI: config.get(CONF_MIN_DLI, min_dli),
                 },
                 FLOW_SENSOR_TEMPERATURE: config[ATTR_SENSORS].get(ATTR_TEMPERATURE),
+                FLOW_SENSOR_AIR_TEMPERATURE: config[ATTR_SENSORS].get(ATTR_AIR_TEMPERATURE),
                 FLOW_SENSOR_MOISTURE: config[ATTR_SENSORS].get(ATTR_MOISTURE),
                 FLOW_SENSOR_CONDUCTIVITY: config[ATTR_SENSORS].get(ATTR_CONDUCTIVITY),
                 FLOW_SENSOR_ILLUMINANCE: config[ATTR_SENSORS].get(ATTR_ILLUMINANCE)

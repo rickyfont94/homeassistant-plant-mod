@@ -9,6 +9,7 @@
           "name": "Plant name",
           "species": "Species",
           "temperature_sensor": "Temperature sensor",
+          "air_temperature_sensor": "Air temperature sensor",
           "moisture_sensor": "Soil moisture sensor",
           "conductivity_sensor": "Conductivity sensor",
           "illuminance_sensor": "Illuminance sensor",
@@ -42,6 +43,8 @@
           "min_dli": "Minimum DLI (mol/d⋅m²)",
           "max_temperature": "Maximum temperature (see above)",
           "min_temperature": "Minimum temperature (see above)",
+          "max_air_temperature": "Maximum air temperature (see above)",
+          "min_air_temperature": "Minimum air temperature (see above)",
           "max_conductivity": "Maximum conductivity (uS/cm)",
           "min_conductivity": "Minimum conductivity (uS/cm)",
           "max_humidity": "Maximum air humidity (%)",
@@ -62,6 +65,7 @@
           "force_update": "Force refresh data from OpenPlantbook",
           "display_pid": "Plant species to display",
           "temperature_sensor": "Temperature sensor",
+          "air_temperature_sensor": "Air temperature sensor",
           "moisture_sensor": "Soil moisture sensor",
           "conductivity_sensor": "Conductivity sensor",
           "illuminance_sensor": "Illuminance sensor",
@@ -72,7 +76,8 @@
           "humidity_trigger": "Use air humidity as problem trigger",
           "conductivity_trigger": "Use conductivity as problem trigger",
           "moisture_trigger": "Use soil moisture as problem trigger",
-          "temperature_trigger": "Use temperature as problem trigger"
+          "temperature_trigger": "Use temperature as problem trigger",
+          "air_temperature_trigger": "Use air temperature as problem trigger"
         }
       }
     }

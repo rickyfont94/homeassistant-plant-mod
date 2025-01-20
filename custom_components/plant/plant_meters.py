@@ -51,6 +51,10 @@ from .const import (
     READING_TEMPERATURE,
     UNIT_DLI,
     UNIT_PPFD,
+    ATTR_AIR_TEMPERATURE,
+    FLOW_SENSOR_AIR_TEMPERATURE,
+    READING_AIR_TEMPERATURE,
+    ICON_AIR_TEMPERATURE,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -259,6 +263,30 @@ class PlantCurrentTemperature(PlantCurrentStatus):
     def device_class(self) -> str:
         """Device class"""
         return SensorDeviceClass.TEMPERATURE
+
+
+class PlantCurrentAirTemperature(PlantCurrentStatus):
+    """Entity class for the current air temperature meter"""
+
+    def __init__(
+        self, hass: HomeAssistant, config: ConfigEntry, plantdevice: Entity
+    ) -> None:
+        """Initialize the sensor"""
+        self._attr_name = (
+            f"{config.data[FLOW_PLANT_INFO][ATTR_NAME]} {READING_AIR_TEMPERATURE}"
+        )
+        self._attr_unique_id = f"{config.entry_id}-current-air-temperature"
+        self._external_sensor = config.data[FLOW_PLANT_INFO].get(
+            FLOW_SENSOR_AIR_TEMPERATURE
+        )
+        self._attr_icon = ICON_AIR_TEMPERATURE
+        self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+        super().__init__(hass, config, plantdevice)
+
+    @property
+    def device_class(self) -> str:
+        """Device class"""
+        return "air_temperature"  # Use the correct device class
 
 
 class PlantCurrentHumidity(PlantCurrentStatus):

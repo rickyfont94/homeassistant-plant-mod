@@ -66,6 +66,12 @@ from .const import (
     READING_TEMPERATURE,
     UNIT_CONDUCTIVITY,
     UNIT_PPFD,
+    READING_AIR_TEMPERATURE,
+    CONF_MAX_AIR_TEMPERATURE,
+    CONF_MIN_AIR_TEMPERATURE,
+    DEFAULT_MAX_AIR_TEMPERATURE,
+    DEFAULT_MIN_AIR_TEMPERATURE,
+    ICON_AIR_TEMPERATURE,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -385,6 +391,191 @@ class PlantMinTemperature(PlantMinMax):
             )
 
             # new_state = int(round((int(self.state) - 32) * 0.5556, 0))
+
+        if (
+            old_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°C"
+            and new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°F"
+        ):
+            new_state = round(
+                TemperatureConverter.convert(
+                    temperature=float(self.state),
+                    from_unit=UnitOfTemperature.CELSIUS,
+                    to_unit=UnitOfTemperature.FAHRENHEIT,
+                )
+            )
+            _LOGGER.debug(
+                "Changing from C to F measurement is %s new is %s",
+                self.state,
+                new_state,
+            )
+
+        self._hass.states.set(self.entity_id, new_state, new_attributes)
+
+
+class PlantMaxAirTemperature(PlantMinMax):
+    """Entity class for max air temperature threshold."""
+
+    def __init__(
+        self, hass: HomeAssistant, config: ConfigEntry, plantdevice: Entity
+    ) -> None:
+        """Initialize the Plant component."""
+        self._attr_name = f"{config.data[FLOW_PLANT_INFO][ATTR_NAME]} {ATTR_MAX} {READING_AIR_TEMPERATURE}"
+        self._attr_unique_id = f"{config.entry_id}-max-air-temperature"
+
+        self._attr_value = config.data[FLOW_PLANT_INFO][FLOW_PLANT_LIMITS].get(
+            CONF_MAX_AIR_TEMPERATURE, DEFAULT_MAX_AIR_TEMPERATURE
+        )
+        super().__init__(hass, config, plantdevice)
+        self._attr_native_unit_of_measurement = self._hass.config.units.temperature_unit
+        self._attr_native_max_value = 60
+        self._attr_native_min_value = -10
+        self._attr_native_step = 1
+        self._attr_icon = ICON_AIR_TEMPERATURE
+
+    @property
+    def device_class(self):
+        return f"air_temperature threshold"
+
+    @property
+    def not_unit_of_measurement(self) -> str | None:
+        """Get unit of measurement from the air temperature meter."""
+        if (
+            not hasattr(self, "_attr_unit_of_measurement")
+            or self._attr_native_unit_of_measurement is None
+        ):
+            self._attr_native_unit_of_measurement = self._default_unit_of_measurement
+
+        if self._plant.sensor_air_temperature:
+            if not self._plant.sensor_air_temperature.unit_of_measurement:
+                return self._attr_native_unit_of_measurement
+            if (
+                self._attr_native_unit_of_measurement
+                != self._plant.sensor_air_temperature.unit_of_measurement
+            ):
+                self._attr_native_unit_of_measurement = (
+                    self._plant.sensor_air_temperature.unit_of_measurement
+                )
+
+        return self._attr_native_unit_of_measurement
+
+    def state_attributes_changed(self, old_attributes, new_attributes):
+        """Calculate C or F."""
+        if new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) is None:
+            return
+        if old_attributes.get(ATTR_UNIT_OF_MEASUREMENT) is None:
+            return
+        if new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == old_attributes.get(
+            ATTR_UNIT_OF_MEASUREMENT
+        ):
+            return
+        new_state = self._attr_state
+        if (
+            old_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°F"
+            and new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°C"
+        ):
+            new_state = round(
+                TemperatureConverter.convert(
+                    temperature=float(self.state),
+                    from_unit=UnitOfTemperature.FAHRENHEIT,
+                    to_unit=UnitOfTemperature.CELSIUS,
+                )
+            )
+            _LOGGER.debug(
+                "Changing from F to C measurement is %s new is %s",
+                self.state,
+                new_state,
+            )
+
+        if (
+            old_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°C"
+            and new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°F"
+        ):
+            new_state = round(
+                TemperatureConverter.convert(
+                    temperature=float(self.state),
+                    from_unit=UnitOfTemperature.CELSIUS,
+                    to_unit=UnitOfTemperature.FAHRENHEIT,
+                )
+            )
+            _LOGGER.debug(
+                "Changing from C to F measurement is %s new is %s",
+                self.state,
+                new_state,
+            )
+
+        self._hass.states.set(self.entity_id, new_state, new_attributes)
+
+class PlantMinAirTemperature(PlantMinMax):
+    """Entity class for min air temperature threshold."""
+
+    def __init__(self, hass: HomeAssistant, config: ConfigEntry, plantdevice: Entity) -> None:
+        """Initialize the component."""
+        self._attr_name = f"{config.data[FLOW_PLANT_INFO][ATTR_NAME]} {ATTR_MIN} {READING_AIR_TEMPERATURE}"
+        self._attr_value = config.data[FLOW_PLANT_INFO][FLOW_PLANT_LIMITS].get(
+            CONF_MIN_AIR_TEMPERATURE, DEFAULT_MIN_AIR_TEMPERATURE
+        )
+
+        self._attr_unique_id = f"{config.entry_id}-min-air-temperature"
+        super().__init__(hass, config, plantdevice)
+        self._attr_native_unit_of_measurement = self._hass.config.units.temperature_unit
+        self._attr_native_max_value = 60
+        self._attr_native_min_value = -10
+        self._attr_native_step = 1
+        self._attr_icon = ICON_AIR_TEMPERATURE
+
+    @property
+    def device_class(self):
+        return "air_temperature"
+
+    @property
+    def not_unit_of_measurement(self) -> str | None:
+        """Get unit of measurement from the air temperature meter."""
+        if (
+            not hasattr(self, "_attr_native_unit_of_measurement")
+            or self._attr_native_unit_of_measurement is None
+        ):
+            self._attr_native_unit_of_measurement = self._default_unit_of_measurement
+
+        if self._plant.sensor_air_temperature:
+            if not self._plant.sensor_air_temperature.unit_of_measurement:
+                return self._attr_native_unit_of_measurement
+            if (
+                self._attr_native_unit_of_measurement
+                != self._plant.sensor_air_temperature.unit_of_measurement
+            ):
+                self._attr_native_unit_of_measurement = (
+                    self._plant.sensor_air_temperature.unit_of_measurement
+                )
+
+        return self._attr_native_unit_of_measurement
+
+    def state_attributes_changed(self, old_attributes, new_attributes):
+        """Handle unit conversion between Celsius and Fahrenheit."""
+        if new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) is None:
+            return
+        if old_attributes.get(ATTR_UNIT_OF_MEASUREMENT) is None:
+            return
+        if new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == old_attributes.get(
+            ATTR_UNIT_OF_MEASUREMENT
+        ):
+            return
+        new_state = self._attr_state
+        if (
+            old_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°F"
+            and new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°C"
+        ):
+            new_state = round(
+                TemperatureConverter.convert(
+                    temperature=float(self.state),
+                    from_unit=UnitOfTemperature.FAHRENHEIT,
+                    to_unit=UnitOfTemperature.CELSIUS,
+                )
+            )
+            _LOGGER.debug(
+                "Changing from F to C measurement is %s new is %s",
+                self.state,
+                new_state,
+            )
 
         if (
             old_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°C"
