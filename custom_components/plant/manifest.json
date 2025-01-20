@@ -1,6 +1,6 @@
 {
   "domain": "plant",
-  "name": "Plant Monitor",
+  "name": "Plant monitor Mod",
   "after_dependencies": [
     "recorder",
     "openplantbook",
