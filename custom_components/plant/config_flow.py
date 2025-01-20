@@ -66,6 +66,15 @@ from .const import (
     FLOW_TEMP_UNIT,
     FLOW_TEMPERATURE_TRIGGER,
     OPB_DISPLAY_PID,
+    ATTR_AIR_TEMPERATURE,
+    ICON_AIR_TEMPERATURE,
+    READING_AIR_TEMPERATURE,
+    CONF_MAX_AIR_TEMPERATURE,
+    CONF_MIN_AIR_TEMPERATURE,
+    DEFAULT_MIN_AIR_TEMPERATURE,
+    DEFAULT_MAX_AIR_TEMPERATURE,
+    FLOW_SENSOR_AIR_TEMPERATURE,
+    FLOW_AIR_TEMPERATURE_TRIGGER,
 )
 from .plant_helpers import PlantHelper
 
@@ -126,6 +135,14 @@ class PlantConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         }
 
         data_schema[FLOW_SENSOR_TEMPERATURE] = selector(
+            {
+                ATTR_ENTITY: {
+                    ATTR_DEVICE_CLASS: SensorDeviceClass.TEMPERATURE,
+                    ATTR_DOMAIN: DOMAIN_SENSOR,
+                }
+            }
+        )
+        data_schema[FLOW_SENSOR_AIR_TEMPERATURE] = selector(
             {
                 ATTR_ENTITY: {
                     ATTR_DEVICE_CLASS: SensorDeviceClass.TEMPERATURE,
@@ -331,6 +348,22 @@ class PlantConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         ] = int
         data_schema[
             vol.Required(
+                CONF_MAX_AIR_TEMPERATURE,
+                default=plant_config[FLOW_PLANT_INFO][ATTR_LIMITS].get(
+                    CONF_MAX_AIR_TEMPERATURE
+                ),
+            )
+        ] = int
+        data_schema[
+            vol.Required(
+                CONF_MAX_AIR_TEMPERATURE,
+                default=plant_config[FLOW_PLANT_INFO][ATTR_LIMITS].get(
+                    CONF_MAX_AIR_TEMPERATURE
+                ),
+            )
+        ] = int
+        data_schema[
+            vol.Required(
                 CONF_MAX_CONDUCTIVITY,
                 default=plant_config[FLOW_PLANT_INFO][ATTR_LIMITS].get(
                     CONF_MAX_CONDUCTIVITY
@@ -501,6 +534,11 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         data_schema[
             vol.Optional(
                 FLOW_TEMPERATURE_TRIGGER, default=self.plant.temperature_trigger
+            )
+        ] = cv.boolean
+        data_schema[
+            vol.Optional(
+                FLOW_AIR_TEMPERATURE_TRIGGER, default=self.plant.temperature_trigger
             )
         ] = cv.boolean
         data_schema[
