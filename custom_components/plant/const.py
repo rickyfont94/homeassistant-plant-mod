@@ -72,8 +72,8 @@ DEFAULT_MIN_MOL = 2
 DEFAULT_MAX_MOL = 30
 DEFAULT_MIN_DLI = 2
 DEFAULT_MAX_DLI = 30
-DEFAULT_MIN_AIR_TEMPERATURE = 10  # Customize as needed
-DEFAULT_MAX_AIR_TEMPERATURE = 40  # Customize as needed
+DEFAULT_MIN_AIR_TEMPERATURE = 18.3  # Customize as needed
+DEFAULT_MAX_AIR_TEMPERATURE = 37.8  # Customize as needed
 
 DEFAULT_IMAGE_PATH = "/config/www/images/plants/"
 DEFAULT_IMAGE_LOCAL_URL = "/local/images/plants/"
