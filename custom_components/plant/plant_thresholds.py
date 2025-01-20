@@ -427,8 +427,8 @@ class PlantMaxAirTemperature(PlantMinMax):
         )
         super().__init__(hass, config, plantdevice)
         self._attr_native_unit_of_measurement = self._hass.config.units.temperature_unit
-        self._attr_native_max_value = 60
-        self._attr_native_min_value = -10
+        self._attr_native_max_value = 37.8
+        self._attr_native_min_value = 18.3
         self._attr_native_step = 1
         self._attr_icon = ICON_AIR_TEMPERATURE
 
@@ -518,8 +518,8 @@ class PlantMinAirTemperature(PlantMinMax):
         self._attr_unique_id = f"{config.entry_id}-min-air-temperature"
         super().__init__(hass, config, plantdevice)
         self._attr_native_unit_of_measurement = self._hass.config.units.temperature_unit
-        self._attr_native_max_value = 60
-        self._attr_native_min_value = -10
+        self._attr_native_max_value = 37.8
+        self._attr_native_min_value = 18.3
         self._attr_native_step = 1
         self._attr_icon = ICON_AIR_TEMPERATURE
 
