@@ -36,12 +36,14 @@ from .const import (
     CONF_MAX_ILLUMINANCE,
     CONF_MAX_MOISTURE,
     CONF_MAX_TEMPERATURE,
+    CONF_MAX_AIR_TEMPERATURE,
     CONF_MIN_CONDUCTIVITY,
     CONF_MIN_DLI,
     CONF_MIN_HUMIDITY,
     CONF_MIN_ILLUMINANCE,
     CONF_MIN_MOISTURE,
     CONF_MIN_TEMPERATURE,
+    CONF_MIN_AIR_TEMPERATURE,
     DATA_UPDATED,
     DEFAULT_MAX_CONDUCTIVITY,
     DEFAULT_MAX_DLI,
@@ -49,12 +51,14 @@ from .const import (
     DEFAULT_MAX_ILLUMINANCE,
     DEFAULT_MAX_MOISTURE,
     DEFAULT_MAX_TEMPERATURE,
+    DEFAULT_MAX_AIR_TEMPERATURE,
     DEFAULT_MIN_CONDUCTIVITY,
     DEFAULT_MIN_DLI,
     DEFAULT_MIN_HUMIDITY,
     DEFAULT_MIN_ILLUMINANCE,
     DEFAULT_MIN_MOISTURE,
     DEFAULT_MIN_TEMPERATURE,
+    DEFAULT_MIN_AIR_TEMPERATURE,
     DOMAIN,
     FLOW_PLANT_INFO,
     FLOW_PLANT_LIMITS,
@@ -64,13 +68,9 @@ from .const import (
     READING_ILLUMINANCE,
     READING_MOISTURE,
     READING_TEMPERATURE,
+    READING_AIR_TEMPERATURE,
     UNIT_CONDUCTIVITY,
     UNIT_PPFD,
-    READING_AIR_TEMPERATURE,
-    CONF_MAX_AIR_TEMPERATURE,
-    CONF_MIN_AIR_TEMPERATURE,
-    DEFAULT_MAX_AIR_TEMPERATURE,
-    DEFAULT_MIN_AIR_TEMPERATURE,
     ICON_AIR_TEMPERATURE,
 )
 
@@ -427,8 +427,8 @@ class PlantMaxAirTemperature(PlantMinMax):
         )
         super().__init__(hass, config, plantdevice)
         self._attr_native_unit_of_measurement = self._hass.config.units.temperature_unit
-        self._attr_native_max_value = 37.8
         self._attr_native_min_value = 18.3
+        self._attr_native_max_value = 37.8
         self._attr_native_step = 1
         self._attr_icon = ICON_AIR_TEMPERATURE
 
@@ -518,8 +518,8 @@ class PlantMinAirTemperature(PlantMinMax):
         self._attr_unique_id = f"{config.entry_id}-min-air-temperature"
         super().__init__(hass, config, plantdevice)
         self._attr_native_unit_of_measurement = self._hass.config.units.temperature_unit
-        self._attr_native_max_value = 37.8
         self._attr_native_min_value = 18.3
+        self._attr_native_max_value = 37.8
         self._attr_native_step = 1
         self._attr_icon = ICON_AIR_TEMPERATURE
 

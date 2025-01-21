@@ -118,7 +118,7 @@ FLOW_DLI_TRIGGER = "dli_trigger"
 FLOW_MOISTURE_TRIGGER = "moisture_trigger"
 FLOW_CONDUCTIVITY_TRIGGER = "conductivity_trigger"
 FLOW_AIR_TEMPERATURE_TRIGGER = "air_temperature_trigger"  # Added for air temperature
-FLOW_AIR_TEMPERATURE_UNIT = "air_temperature_unit" # Added for air temperature
+#FLOW_AIR_TEMPERATURE_UNIT = "air_temperature_unit" # Not used
 
 FLOW_FORCE_SPECIES_UPDATE = "force_update"
 
