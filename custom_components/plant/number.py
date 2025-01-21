@@ -40,12 +40,14 @@ from .const import (
     CONF_MAX_ILLUMINANCE,
     CONF_MAX_MOISTURE,
     CONF_MAX_TEMPERATURE,
+    CONF_MAX_AIR_TEMPERATURE,
     CONF_MIN_CONDUCTIVITY,
     CONF_MIN_DLI,
     CONF_MIN_HUMIDITY,
     CONF_MIN_ILLUMINANCE,
     CONF_MIN_MOISTURE,
     CONF_MIN_TEMPERATURE,
+    CONF_MIN_AIR_TEMPERATURE,
     DATA_UPDATED,
     DEFAULT_MAX_CONDUCTIVITY,
     DEFAULT_MAX_DLI,
@@ -53,12 +55,14 @@ from .const import (
     DEFAULT_MAX_ILLUMINANCE,
     DEFAULT_MAX_MOISTURE,
     DEFAULT_MAX_TEMPERATURE,
+    DEFAULT_MAX_AIR_TEMPERATURE,
     DEFAULT_MIN_CONDUCTIVITY,
     DEFAULT_MIN_DLI,
     DEFAULT_MIN_HUMIDITY,
     DEFAULT_MIN_ILLUMINANCE,
     DEFAULT_MIN_MOISTURE,
     DEFAULT_MIN_TEMPERATURE,
+    DEFAULT_MIN_AIR_TEMPERATURE,
     DOMAIN,
     FLOW_PLANT_INFO,
     FLOW_PLANT_LIMITS,
@@ -68,20 +72,16 @@ from .const import (
     ICON_ILLUMINANCE,
     ICON_MOISTURE,
     ICON_TEMPERATURE,
+    ICON_AIR_TEMPERATURE,
     READING_CONDUCTIVITY,
     READING_DLI,
     READING_HUMIDITY,
     READING_ILLUMINANCE,
     READING_MOISTURE,
     READING_TEMPERATURE,
+    READING_AIR_TEMPERATURE,
     UNIT_CONDUCTIVITY,
     UNIT_DLI,
-    ICON_AIR_TEMPERATURE,
-    READING_AIR_TEMPERATURE,
-    CONF_MAX_AIR_TEMPERATURE,
-    CONF_MIN_AIR_TEMPERATURE,
-    DEFAULT_MIN_AIR_TEMPERATURE,
-    DEFAULT_MAX_AIR_TEMPERATURE,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -105,8 +105,8 @@ async def async_setup_entry(
     pminh = PlantMinHumidity(hass, entry, plant)
     pmaxmm = PlantMaxDli(hass, entry, plant)
     pminmm = PlantMinDli(hass, entry, plant)
-    pmamt = PlantMinAirTemperature(hass, entry, plant) # Added for air temperature
     pmaxx = PlantMaxAirTemperature(hass, entry, plant) # Added for air temperature
+    pmamt = PlantMinAirTemperature(hass, entry, plant) # Added for air temperature
 
     number_entities = [
         pmaxm,
@@ -121,8 +121,8 @@ async def async_setup_entry(
         pminh,
         pmaxmm,
         pminmm,
-        pmamt,
-        pmaxx
+        pmaxx,
+        pmamt
     ]
     async_add_entities(number_entities)
 
@@ -140,8 +140,8 @@ async def async_setup_entry(
         min_humidity=pminh,
         max_dli=pmaxmm,
         min_dli=pminmm,
-        max_air_temperature=pmamt,
-        min_air_temperature=pmaxx
+        max_air_temperature=pmaxx,
+        min_air_temperature=pmamt
     )
     # await _async_number_add_to_device_registry(
     #     hass, number_entities=number_entities, device_id=plant.device_id
