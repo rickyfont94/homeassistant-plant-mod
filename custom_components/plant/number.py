@@ -362,7 +362,7 @@ class PlantMaxTemperature(PlantMinMax):
             and new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°C"
         ):
             new_state = round(
-                TemperatureConerter.convert(
+                TemperatureConverter.convert(
                     temperature=float(self.state),
                     from_unit=UnitOfTemperature.FAHRENHEIT,
                     to_unit=UnitOfTemperature.CELSIUS,
@@ -379,7 +379,7 @@ class PlantMaxTemperature(PlantMinMax):
             and new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°F"
         ):
             new_state = round(
-                TemperatureConerter.convert(
+                TemperatureConverter.convert(
                     temperature=float(self.state),
                     from_unit=UnitOfTemperature.CELSIUS,
                     to_unit=UnitOfTemperature.FAHRENHEIT,
@@ -434,7 +434,7 @@ class PlantMinTemperature(PlantMinMax):
             and new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°C"
         ):
             new_state = round(
-                TemperatureConerter.convert(
+                TemperatureConverter.convert(
                     temperature=float(self.state),
                     from_unit=UnitOfTemperature.FAHRENHEIT,
                     to_unit=UnitOfTemperature.CELSIUS,
@@ -453,7 +453,7 @@ class PlantMinTemperature(PlantMinMax):
             and new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°F"
         ):
             new_state = round(
-                TemperatureConerter.convert(
+                TemperatureConverter.convert(
                     temperature=float(self.state),
                     from_unit=UnitOfTemperature.CELSIUS,
                     to_unit=UnitOfTemperature.FAHRENHEIT,
@@ -487,6 +487,55 @@ class PlantMaxAirTemperature(PlantMinMax):
     @property
     def device_class(self):
         return "air_temperature"
+    
+    def state_attributes_changed(self, old_attributes, new_attributes):
+        """Calculate C or F"""
+        if new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) is None:
+            return
+        if old_attributes.get(ATTR_UNIT_OF_MEASUREMENT) is None:
+            return
+        if new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == old_attributes.get(
+            ATTR_UNIT_OF_MEASUREMENT
+        ):
+            return
+        new_state = self._attr_state
+        if (
+            old_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°F"
+            and new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°C"
+        ):
+            new_state = round(
+                TemperatureConverter.convert(
+                    temperature=float(self.state),
+                    from_unit=UnitOfTemperature.FAHRENHEIT,
+                    to_unit=UnitOfTemperature.CELSIUS,
+                )
+            )
+            _LOGGER.debug(
+                "Changing from F to C measurement is %s new is %s",
+                self.state,
+                new_state,
+            )
+
+            # new_state = int(round((int(self.state) - 32) * 0.5556, 0))
+
+        if (
+            old_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°C"
+            and new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°F"
+        ):
+            new_state = round(
+                TemperatureConverter.convert(
+                    temperature=float(self.state),
+                    from_unit=UnitOfTemperature.CELSIUS,
+                    to_unit=UnitOfTemperature.FAHRENHEIT,
+                )
+            )
+            _LOGGER.debug(
+                "Changing from C to F measurement is %s new is %s",
+                self.state,
+                new_state,
+            )
+
+        self._hass.states.set(self.entity_id, new_state, new_attributes)
 
 class PlantMinAirTemperature(PlantMinMax):
     """Entity class for min air temperature threshold."""
@@ -508,6 +557,55 @@ class PlantMinAirTemperature(PlantMinMax):
     @property
     def device_class(self):
         return "air_temperature"
+    
+    def state_attributes_changed(self, old_attributes, new_attributes):
+        """Calculate C or F"""
+        if new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) is None:
+            return
+        if old_attributes.get(ATTR_UNIT_OF_MEASUREMENT) is None:
+            return
+        if new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == old_attributes.get(
+            ATTR_UNIT_OF_MEASUREMENT
+        ):
+            return
+        new_state = self._attr_state
+        if (
+            old_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°F"
+            and new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°C"
+        ):
+            new_state = round(
+                TemperatureConverter.convert(
+                    temperature=float(self.state),
+                    from_unit=UnitOfTemperature.FAHRENHEIT,
+                    to_unit=UnitOfTemperature.CELSIUS,
+                )
+            )
+            _LOGGER.debug(
+                "Changing from F to C measurement is %s new is %s",
+                self.state,
+                new_state,
+            )
+
+            # new_state = int(round((int(self.state) - 32) * 0.5556, 0))
+
+        if (
+            old_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°C"
+            and new_attributes.get(ATTR_UNIT_OF_MEASUREMENT) == "°F"
+        ):
+            new_state = round(
+                TemperatureConverter.convert(
+                    temperature=float(self.state),
+                    from_unit=UnitOfTemperature.CELSIUS,
+                    to_unit=UnitOfTemperature.FAHRENHEIT,
+                )
+            )
+            _LOGGER.debug(
+                "Changing from C to F measurement is %s new is %s",
+                self.state,
+                new_state,
+            )
+
+        self._hass.states.set(self.entity_id, new_state, new_attributes)
 ############################################################################
 class PlantMaxIlluminance(PlantMinMax):
     """Entity class for max illuminance threshold"""
